@@ -1,0 +1,67 @@
+# Byte-compiled files
+*.py[cod]
+__pycache__/
+*.so
+
+# Django migrations
+**/migrations/*
+
+# Environment variables
+.env
+
+# Logs
+*.log
+*.out
+*.err
+
+# Database files
+*.sqlite3
+
+# Media and uploaded files
+media/
+
+# Static files
+staticfiles/
+
+# Local settings
+local_settings.py
+
+# Virtual environment
+venv/
+env/
+*.venv
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Test coverage
+htmlcov/
+.coverage
+*.cover
+.cache
+nosetests.xml
+coverage.xml
+*.lcov
+
+# Celery beat schedule file
+celerybeat-schedule
+
+# pytest
+.pytest_cache/
+
+# MyPy cache
+.mypy_cache/
+
+# PyInstaller
+*.spec
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
