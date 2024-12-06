@@ -1,6 +1,8 @@
 
 from django.http import HttpResponse
 from django.http import JsonResponse
+from django.shortcuts import render
+
 from .models import Companies, Lob, Categories
 import pandas as pd
 import io
@@ -58,6 +60,8 @@ def file_cleaning(request):
             return response
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)})
+    # If it's a GET request, render the upload form
+    return render(request, 'upload_file.html')
 
 
 
