@@ -111,11 +111,10 @@ def download_excel(extracted_data, insurers_list):
 
 def excel_json_data(extracted_data, insurers_list):
     clubbed_names = list(map(lambda x: x['clubbed_name'], insurers_list))
-
+    final_list = extracted_data[0] + extracted_data[1]
     categories = list(Categories.objects.filter(clubbed_name__in=clubbed_names).values())
-
     data_list = list()
-    for extract_dict in extracted_data[0]:
+    for extract_dict in final_list:
         data_dict = dict()
         for insurer_dict in insurers_list:
             if extract_dict.get('Unnamed: 0') in insurer_dict.values():
@@ -123,7 +122,12 @@ def excel_json_data(extracted_data, insurers_list):
                     'clubbed_name': insurer_dict.get('clubbed_name'),
                     'name': extract_dict.get('Unnamed: 0')
                 }
-            for category in categories:
-                data_dict['category'] = category.get('category')
         data_list.append(data_dict)
-    return data_list
+    for cat in data_list:
+        for category in categories:
+            if cat.get('clubbed_name') in category.values():
+                cat.update({
+                    'category': category.get('category')
+                })
+    sorted_data = sorted(data_list, key=lambda x: x['clubbed_name'])
+    return sorted_data
