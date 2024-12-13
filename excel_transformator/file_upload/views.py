@@ -19,7 +19,7 @@ def file_cleaning(request):
 
         try:
             # get the required columns
-            required_columns = Lob.objects.get(pk=1).lob
+            required_columns = Lob.objects.all().first().lob
             insurers_list = list(Companies.objects.all().values())
             # Extract all the insurer names from the list
             insurers = [insurer['insurer'].lower() for insurer in insurers_list]
@@ -31,17 +31,18 @@ def file_cleaning(request):
             # Iterate for Excel sheet file
             for sheet_name in excel_file.sheet_names:
                 data = excel_file.parse(sheet_name, header=1)
-
+                if 'Unnamed: 0' in data.columns:
+                    data = data.rename(columns={'Unnamed: 0': 'empty_col'})
                 available_columns = [col for col in required_columns if col in data.columns]
                 if not available_columns:
                     continue
 
                 # Select only the first column and the required columns
-                columns_to_select = ['Unnamed: 0'] + available_columns  # Assuming the first column is unnamed (could be adjusted if it's named)
+                columns_to_select = ['empty_col'] + available_columns  # Assuming the first column is unnamed (could be adjusted if it's named)
                 data = data[columns_to_select]
 
-                # Filter rows where 'Unnamed: 0' matches any insurer in the insurers list
-                insurers_data = data[data['Unnamed: 0'].str.lower().isin(insurers)]
+                # Filter rows where 'empty_col' matches any insurer in the insurers list
+                insurers_data = data[data['empty_col'].str.lower().isin(insurers)]
 
                 # Perform data cleaning
                 insurers_data = insurers_data.dropna(how='all')  # Remove rows with all NaN values
@@ -117,11 +118,11 @@ def excel_json_data(extracted_data, insurers_list):
     for extract_dict in final_list:
         data_dict = dict()
         for insurer_dict in insurers_list:
-            if extract_dict.get('Unnamed: 0') in insurer_dict.values():
-                data_dict = {
+            if extract_dict.get('empty_col') in insurer_dict.values():
+                data_dict.update({
                     'clubbed_name': insurer_dict.get('clubbed_name'),
-                    'name': extract_dict.get('Unnamed: 0')
-                }
+                    'name': extract_dict.get('empty_col')
+                })
         data_list.append(data_dict)
     for cat in data_list:
         for category in categories:
