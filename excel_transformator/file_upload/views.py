@@ -55,6 +55,7 @@ def file_cleaning(request):
                 excel_data,
                 content_type='application/vnd.ms-excel'
             )
+            # It tells the browser how to handle the content of the response
             response['Content-Disposition'] = f'attachment; filename="Output_file.xlsx"'
             return response
         except Exception as e:
